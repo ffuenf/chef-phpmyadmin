@@ -17,12 +17,13 @@
 # limitations under the License.
 #
 
-default['phpmyadmin']['version'] = '4.3.8'
-default['phpmyadmin']['checksum'] = '399b25e12a528e03eb298c75db7855f7ae0799402dce71dc5bede628dfacad2f'
-default['phpmyadmin']['mirror'] = 'http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin'
+default['phpmyadmin']['version'] = '4.4.10'
+default['phpmyadmin']['checksum'] = '75a95ee9624dd4fee745fe41d4374b84d6a5386721b4c7f122fd3d7d1cbf6d41'
+default['phpmyadmin']['mirror'] = 'https://files.phpmyadmin.net/phpMyAdmin/'
 default['phpmyadmin']['server_name'] = node['fqdn']
 
 default['phpmyadmin']['fpm'] = true
+default['phpmyadmin']['stand_alone'] = true
 
 default['phpmyadmin']['home'] = '/opt/phpmyadmin'
 default['phpmyadmin']['user'] = 'phpmyadmin'
@@ -47,3 +48,6 @@ default['phpmyadmin']['default_lang'] = 'en'
 default['phpmyadmin']['default_display'] = 'horizontal'
 default['phpmyadmin']['query_history'] = true
 default['phpmyadmin']['query_history_size'] = 100
+
+default['phpmyadmin']['config_template'] = 'config.inc.php.erb'
+default['phpmyadmin']['config_template_cookbook'] = 'phpmyadmin'

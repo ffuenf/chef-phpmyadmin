@@ -19,6 +19,25 @@
 
 require 'digest/sha1'
 
+# PHP Recipe includes we already know PHPMyAdmin needs
+if node['phpmyadmin']['stand_alone'] then
+	directory node['phpmyadmin']['upload_dir'] do
+		owner 'root'
+		group 'root'
+		mode 01777
+		recursive true
+		action :create
+	end
+
+	directory node['phpmyadmin']['save_dir'] do
+		owner 'root'
+		group 'root'
+		mode 01777
+		recursive true
+		action :create
+	end
+end
+
 home = node['phpmyadmin']['home']
 user = node['phpmyadmin']['user']
 group = node['phpmyadmin']['group']
@@ -41,22 +60,6 @@ directory home do
 	owner user
 	group group
 	mode 00755
-	recursive true
-	action :create
-end
-
-directory node['phpmyadmin']['upload_dir'] do
-	owner 'root'
-	group 'root'
-	mode 01777
-	recursive true
-	action :create
-end
-
-directory node['phpmyadmin']['save_dir'] do
-	owner 'root'
-	group 'root'
-	mode 01777
 	recursive true
 	action :create
 end
@@ -101,9 +104,10 @@ unless Chef::Config[:solo] || node['phpmyadmin']['blowfish_secret']
 end
 
 template "#{home}/config.inc.php" do
-	source 'config.inc.php.erb'
+	source node['phpmyadmin']['config_template']
 	owner user
 	group group
+	cookbook node['phpmyadmin']['config_template_cookbook']
 	mode 00644
 end
 
