@@ -68,14 +68,11 @@ end
 
 # Download the selected PHPMyAdmin archive
 remote_file "#{Chef::Config['file_cache_path']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz" do
-  owner user
-  group group
-  mode 00644
 	retries 5
 	retry_delay 2
-  action :create
-  source "#{node['phpmyadmin']['mirror']}/#{node['phpmyadmin']['version']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz"
-  checksum node['phpmyadmin']['checksum']
+	action :create
+	source "#{node['phpmyadmin']['mirror']}/#{node['phpmyadmin']['version']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz"
+	checksum node['phpmyadmin']['checksum']
 end
 
 bash 'extract-php-myadmin' do
@@ -84,7 +81,7 @@ bash 'extract-php-myadmin' do
 	cwd home
 	code <<-EOH
 		rm -fr *
-		tar xzf #{Chef::Config['file_cache_path']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz
+		tar xzf #{Chef::Config['file_cache_path']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz --no-same-owner -C phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages
 		mv phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages/* #{home}/
 		rm -fr phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages
 	EOH
