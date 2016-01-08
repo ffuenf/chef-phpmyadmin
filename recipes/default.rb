@@ -80,8 +80,7 @@ bash 'extract-php-myadmin' do
 	group group
 	cwd home
 	code <<-EOH
-		rm -fr *
-		tar xzf #{Chef::Config['file_cache_path']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz --no-same-owner -C phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages
+		tar xzf #{Chef::Config['file_cache_path']}/phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages.tar.gz
 		mv phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages/* #{home}/
 		rm -fr phpMyAdmin-#{node['phpmyadmin']['version']}-all-languages
 	EOH
@@ -98,8 +97,8 @@ end
 
 # Blowfish Secret - set it statically when running on Chef Solo via attribute
 unless Chef::Config[:solo] || node['phpmyadmin']['blowfish_secret']
-  node.set['phpmyadmin']['blowfish_secret'] = Digest::SHA1.hexdigest(IO.read('/dev/urandom', 2048))
-  node.save
+	node.set['phpmyadmin']['blowfish_secret'] = Digest::SHA1.hexdigest(IO.read('/dev/urandom', 2048))
+	node.save
 end
 
 template "#{home}/config.inc.php" do
@@ -111,22 +110,22 @@ template "#{home}/config.inc.php" do
 end
 
 if (node['phpmyadmin'].attribute?('fpm') && node['phpmyadmin']['fpm'])
- 	php_fpm 'phpmyadmin' do
-	  action :add
-	  user user
-	  group group
-	  socket true
-	  socket_path node['phpmyadmin']['socket']
-	  socket_user user
-	  socket_group group
-	  socket_perms '0666'
-	  start_servers 2
-	  min_spare_servers 2
-	  max_spare_servers 8
-	  max_children 8
-	  terminate_timeout (node['php']['ini']['directives']['global']['max_execution_time'].to_i + 20)
-	  value_overrides({
-	    :error_log => "#{node['php']['fpm']['log_dir']}/phpmyadmin.log"
-	  })
+	php_fpm 'phpmyadmin' do
+		action :add
+		user user
+		group group
+		socket true
+		socket_path node['phpmyadmin']['socket']
+		socket_user user
+		socket_group group
+		socket_perms '0666'
+		start_servers 2
+		min_spare_servers 2
+		max_spare_servers 8
+		max_children 8
+		terminate_timeout (node['php']['ini']['directives']['global']['max_execution_time'].to_i + 20)
+		value_overrides({
+			:error_log => "#{node['php']['fpm']['log_dir']}/phpmyadmin.log"
+		})
 	end
 end
